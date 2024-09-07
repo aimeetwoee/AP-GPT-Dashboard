@@ -27,6 +27,11 @@
             width: 100%;
             padding: 10px;
         }
+        #response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
     </style>
 </head>
 <body>
@@ -51,26 +56,39 @@
             const prompt = document.getElementById("prompt").value;
             const responseDiv = document.getElementById("response");
 
-            // Replace with your API endpoint and API key
-            const apiUrl = `https://api.openai.com/v1/engines/davinci-codex/completions`;
-            const apiKey = '';  // Remove API key for security reasons
+            // Replace with your actual OpenAI API key
+            const apiKey = 'your-api-key-here'; 
 
-            // Sending the prompt to the API
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-                body: JSON.stringify({
-                    prompt: prompt,
-                    max_tokens: 100
-                })
-            });
+            // Check if the user provided a prompt
+            if (!prompt) {
+                responseDiv.innerHTML = `<p>Please enter a prompt.</p>`;
+                return;
+            }
 
-            // Get the response from the API and display it
-            const data = await response.json();
-            responseDiv.innerHTML = `<p>${data.choices[0].text}</p>`;
+            responseDiv.innerHTML = `<p>Loading...</p>`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        model: 'text-davinci-003', // You can choose another model if needed
+                        prompt: prompt,
+                        max_tokens: 100,  // Adjust as per your needs
+                    }),
+                });
+
+                const data = await response.json();
+                
+                // Display the chatbot response
+                responseDiv.innerHTML = `<p>${data.choices[0].text}</p>`;
+            } catch (error) {
+                console.error('Error:', error);
+                responseDiv.innerHTML = `<p>There was an error processing your request. Please try again later.</p>`;
+            }
         }
     </script>
 </body>
