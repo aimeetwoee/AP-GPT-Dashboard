@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP GPT Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        button {
+            margin: 5px 0;
+            width: 100%;
+            padding: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>AP GPT</h2>
+        <button onclick="location.href='index.html'">AP Chatbot</button>
+        <button onclick="location.href='transcribe.html'">Transcribe</button>
+        <button onclick="location.href='translate.html'">Translation</button>
+        <button onclick="location.href='headline_ideas.html'">Headline Ideas</button>
+        <button onclick="location.href='summarize.html'">Summarize</button>
+        <button onclick="location.href='story_ideas.html'">Story Ideas</button>
+    </div>
+    <div class="content">
+        <h2>AP Chatbot</h2>
+        <textarea id="prompt" rows="5" placeholder="Enter your prompt"></textarea>
+        <button onclick="submitPrompt()">Submit</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        async function submitPrompt() {
+            const prompt = document.getElementById("prompt").value;
+            const responseDiv = document.getElementById("response");
+
+            // Replace with your API endpoint and API key
+            const apiUrl = `https://api.openai.com/v1/engines/davinci-codex/completions`;
+            const apiKey = '';  // Remove API key for security reasons
+
+            // Sending the prompt to the API
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    max_tokens: 100
+                })
+            });
+
+            // Get the response from the API and display it
+            const data = await response.json();
+            responseDiv.innerHTML = `<p>${data.choices[0].text}</p>`;
+        }
+    </script>
+</body>
+</html>
